@@ -14,6 +14,7 @@ const ServerEnvSchema = z.object({
 
   FAL_KEY: z.string().min(1),
   ELEVENLABS_API_KEY: z.string().min(1),
+  ELEVENLABS_VOICE_ID: z.string().min(1).optional(),
 
   HYPERSPELL_API_KEY: z.string().min(1),
   HYPERSPELL_BASE_URL: z.string().url().optional(),
@@ -36,6 +37,7 @@ export function getServerEnv(): ServerEnv {
 
     FAL_KEY: process.env.FAL_KEY,
     ELEVENLABS_API_KEY: process.env.ELEVENLABS_API_KEY,
+    ELEVENLABS_VOICE_ID: emptyToUndefined(process.env.ELEVENLABS_VOICE_ID),
 
     HYPERSPELL_API_KEY: process.env.HYPERSPELL_API_KEY,
     HYPERSPELL_BASE_URL: emptyToUndefined(process.env.HYPERSPELL_BASE_URL),

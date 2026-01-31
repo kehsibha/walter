@@ -265,7 +265,9 @@ async function testFal(level: SmokeLevel): Promise<TestResult> {
     for (const c of candidates) {
       try {
         const res = await fal.run(c.endpointId as any, { input: c.input as any });
-        const firstUrl = (res as any)?.images?.[0]?.url;
+        // fal.run returns { data, requestId }; images are in data.images
+        const firstUrl =
+          (res as any)?.data?.images?.[0]?.url ?? (res as any)?.images?.[0]?.url;
         if (typeof firstUrl !== "string" || !firstUrl.startsWith("http")) {
           return { ok: false, error: `fal.ai deep model run (${c.endpointId}) returned no image URL` };
         }

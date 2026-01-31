@@ -11,6 +11,12 @@ type ContentRow = {
   videos: unknown;
 };
 
+type SummaryRow = {
+  id: string;
+  axios_summary: unknown;
+  created_at: string;
+};
+
 export async function GET() {
   const supabase = createSupabaseService();
 
@@ -22,7 +28,9 @@ export async function GET() {
     .limit(1)
     .maybeSingle();
 
-  const { data: events } = job?.id
+  // Only show events for jobs that are actively running (not stale failed/succeeded jobs)
+  const isActiveJob = job?.status === "queued" || job?.status === "running";
+  const { data: events } = job?.id && isActiveJob
     ? await supabase
         .from("generation_job_events")
         .select("kind, message, items, created_at")
@@ -68,6 +76,49 @@ export async function GET() {
     video: row.videos,
   }));
 
-  return NextResponse.json({ job, events: (events ?? []).reverse(), items });
+  // Also fetch orphaned summaries (summaries without videos yet - from current/recent jobs)
+  // Only show summaries from the last 30 minutes to avoid stale data accumulation
+  const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+  const { data: orphanedSummaries } = await supabase
+    .from("summaries")
+    .select("id, axios_summary, created_at")
+    .gte("created_at", thirtyMinutesAgo)
+    .order("created_at", { ascending: false })
+    .limit(10);
+
+  // Filter to only summaries that aren't already in items (via videos)
+  const existingSummaryIds = new Set(
+    items
+      .map((it) => (it.video as { summaries?: { id: string } } | null)?.summaries?.id)
+      .filter(Boolean)
+  );
+  
+  const pendingSummaries = ((orphanedSummaries ?? []) as SummaryRow[])
+    .filter((s) => !existingSummaryIds.has(s.id))
+    .map((s) => ({
+      id: `pending-${s.id}`,
+      viewed: false,
+      liked: false,
+      created_at: s.created_at,
+      video: {
+        id: null,
+        video_url: null,
+        thumbnail_url: null,
+        duration: null,
+        script: null,
+        summaries: {
+          id: s.id,
+          axios_summary: s.axios_summary,
+          created_at: s.created_at,
+        },
+      },
+    }));
+
+  return NextResponse.json({ 
+    job, 
+    events: (events ?? []).reverse(), 
+    items,
+    pendingSummaries, // Summaries without videos (for newsletter view)
+  });
 }
 

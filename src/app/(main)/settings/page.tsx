@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { signOutAction } from "@/app/(auth)/actions";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function SettingsPage() {
   return (
@@ -18,6 +19,23 @@ export default function SettingsPage() {
         </header>
 
         <main className="mt-8 space-y-4">
+          {/* Appearance */}
+          <div className="rounded-3xl border border-[color:var(--hairline)] bg-[color:color-mix(in_oklab,var(--paper2)_60%,transparent)] p-6 shadow-[0_24px_70px_var(--shadow)]">
+            <div className="text-[12px] tracking-[0.22em] text-[color:var(--muted)]">
+              APPEARANCE
+            </div>
+            <div className="mt-4 flex items-center justify-between gap-4">
+              <div>
+                <div className="text-[15px] text-[color:var(--ink2)]">Theme</div>
+                <div className="mt-1 text-[13px] text-[color:var(--muted)]">
+                  Choose between light, dark, or system preference
+                </div>
+              </div>
+              <ThemeToggle />
+            </div>
+          </div>
+
+          {/* Account */}
           <div className="rounded-3xl border border-[color:var(--hairline)] bg-[color:color-mix(in_oklab,var(--paper2)_60%,transparent)] p-6 shadow-[0_24px_70px_var(--shadow)]">
             <div className="text-[12px] tracking-[0.22em] text-[color:var(--muted)]">
               ACCOUNT

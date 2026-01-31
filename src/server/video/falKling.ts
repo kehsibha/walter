@@ -20,9 +20,10 @@ export async function generateKlingClips(script: VideoScript) {
     const scene = script.scenes[i];
     const prompt = [
       scene.description,
-      scene.overlay ? `On-screen text: ${scene.overlay}` : "",
-      "Style: clean modern news graphics, subtle depth, infographic cues, high-contrast text-friendly compositions.",
-      "Avoid: talking heads, cheesy stock footage, sensational visuals, cluttered backgrounds.",
+      scene.overlay ? `On-screen text overlay: "${scene.overlay}"` : "",
+      "Style: A warm, approachable presenter speaking directly to camera in a clean, modern setting. Natural lighting, minimal background distractions. The presenter has a friendly, confident demeanor—like a knowledgeable friend explaining something important. Think Mayor Zohran Mamdani's direct-to-camera TikTok style: authentic, conversational, not a traditional news anchor.",
+      "Setting: Simple, tasteful background (apartment, office, or neutral modern space). Warm color tones.",
+      "Framing: Medium close-up, presenter centered, making eye contact with camera.",
     ]
       .filter(Boolean)
       .join("\n");
@@ -34,7 +35,7 @@ export async function generateKlingClips(script: VideoScript) {
         duration: "5",
         aspect_ratio: "9:16",
         generate_audio: false,
-        negative_prompt: "blur, distort, low quality, text errors, watermarks, logos, faces, talking head, cheap stock footage",
+        negative_prompt: "blur, distort, low quality, text errors, watermarks, logos, cheap stock footage, TV studio, news desk, formal suit, stiff posture, multiple people, busy background",
         cfg_scale: 0.55,
       },
       {

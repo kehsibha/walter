@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeToggleCompact } from "@/components/ThemeToggle";
 
 export default function Home() {
   return (
@@ -10,16 +11,19 @@ export default function Home() {
               WALTER
             </div>
             <div className="h-[1px] w-10 bg-[color:var(--hairline)]" />
-            <div className="text-[13px] text-[color:var(--muted)]">
+            <div className="hidden sm:block text-[13px] text-[color:var(--muted)]">
               trustworthy news, personalized
             </div>
           </div>
-          <Link
-            href="/sign-in"
-            className="rounded-full border border-[color:var(--hairline)] bg-[color:color-mix(in_oklab,var(--paper)_70%,transparent)] px-4 py-2 text-[13px] tracking-wide text-[color:var(--ink2)] shadow-[0_12px_30px_var(--shadow)] transition hover:-translate-y-[1px] hover:border-[color:color-mix(in_oklab,var(--gold)_40%,var(--hairline))]"
-          >
-            Sign in
-          </Link>
+          <div className="flex items-center gap-3">
+            <ThemeToggleCompact />
+            <Link
+              href="/sign-in"
+              className="rounded-full border border-[color:var(--hairline)] bg-[color:color-mix(in_oklab,var(--paper)_70%,transparent)] px-4 py-2 text-[13px] tracking-wide text-[color:var(--ink2)] shadow-[0_12px_30px_var(--shadow)] transition hover:-translate-y-[1px] hover:border-[color:color-mix(in_oklab,var(--gold)_40%,var(--hairline))]"
+            >
+              Sign in
+            </Link>
+          </div>
         </header>
 
         <section className="mt-14 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">

@@ -23,31 +23,35 @@ export async function exaSearchNews(topic: string, opts?: { days?: number; numRe
   const days = opts?.days ?? 7;
   const numResults = opts?.numResults ?? 10;
 
-  const res = await exa.searchAndContents(topic, {
-    numResults,
-    useAutoprompt: true,
-    text: true,
-    highlights: false,
-    startPublishedDate: new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString(),
-  });
+  try {
+    const res = await exa.searchAndContents(topic, {
+      numResults,
+      useAutoprompt: true,
+      text: true,
+      highlights: false,
+      startPublishedDate: new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString(),
+    });
 
-  const results = (res?.results ?? []) as unknown[];
-  const mapped: ExaSource[] = results
-    .map((r) => {
-      const obj = r as Record<string, unknown>;
-      const url = typeof obj.url === "string" ? obj.url : "";
-      const title =
-        (typeof obj.title === "string" && obj.title) || url || "Untitled";
-      return {
-        title,
-        url,
-        publishedDate: typeof obj.publishedDate === "string" ? obj.publishedDate : undefined,
-        author: typeof obj.author === "string" ? obj.author : undefined,
-        text: typeof obj.text === "string" ? obj.text : undefined,
-      } satisfies ExaSource;
-    })
-    .filter((r) => typeof r.url === "string" && r.url.length > 0);
+    const results = (res?.results ?? []) as unknown[];
+    const mapped: ExaSource[] = results
+      .map((r) => {
+        const obj = r as Record<string, unknown>;
+        const url = typeof obj.url === "string" ? obj.url : "";
+        const title = (typeof obj.title === "string" && obj.title) || url || "Untitled";
+        return {
+          title,
+          url,
+          publishedDate: typeof obj.publishedDate === "string" ? obj.publishedDate : undefined,
+          author: typeof obj.author === "string" ? obj.author : undefined,
+          text: typeof obj.text === "string" ? obj.text : undefined,
+        } satisfies ExaSource;
+      })
+      .filter((r) => typeof r.url === "string" && r.url.length > 0);
 
-  return mapped;
+    return mapped;
+  } catch (error) {
+    console.error(`Exa search failed for topic "${topic}":`, error);
+    return [];
+  }
 }
 
