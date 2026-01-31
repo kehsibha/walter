@@ -1,26 +1,94 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Walter palette: warm paper + ink + restrained gold. */
+  --paper: #fbfaf7;
+  --paper2: #f4f1ea;
+  --ink: #141312;
+  --ink2: #2a2623;
+  --muted: rgba(20, 19, 18, 0.62);
+  --hairline: rgba(20, 19, 18, 0.12);
+  --gold: #b08d3a;
+  --gold2: #8f6f27;
+  --shadow: rgba(20, 19, 18, 0.12);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-space-grotesk);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --paper: #0c0b0a;
+    --paper2: #141110;
+    --ink: #f4f1ea;
+    --ink2: #ede7dc;
+    --muted: rgba(244, 241, 234, 0.64);
+    --hairline: rgba(244, 241, 234, 0.12);
+    --gold: #d0b36a;
+    --gold2: #b08d3a;
+    --shadow: rgba(0, 0, 0, 0.45);
+
+    --background: var(--paper);
+    --foreground: var(--ink);
   }
+}
+
+* {
+  text-rendering: geometricPrecision;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* Subtle atmosphere: shaped gradient + grain. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(
+      1200px 700px at 25% 15%,
+      color-mix(in oklab, var(--gold) 18%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 520px at 78% 85%,
+      color-mix(in oklab, var(--ink) 12%, transparent),
+      transparent 58%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--paper2) 55%, transparent),
+      transparent 55%
+    );
+  opacity: 0.9;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+  opacity: 0.15;
+}
+
+@media (prefers-color-scheme: dark) {
+  body::after {
+    mix-blend-mode: screen;
+    opacity: 0.08;
+  }
 }
